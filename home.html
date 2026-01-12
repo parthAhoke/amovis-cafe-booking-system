@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Amovi's Cafe & Fast Food – Packages</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+
+    body{
+      min-height:100vh;
+      background:linear-gradient(135deg,#e9d5ff,#fbcfe8);
+      padding-top:90px;
+    }
+
+    header{
+      position:fixed;
+      top:0;left:0;
+      width:100%;height:75px;
+      background:rgba(255,255,255,0.75);
+      backdrop-filter:blur(14px);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      box-shadow:0 10px 30px rgba(0,0,0,0.15);
+      z-index:1000;
+    }
+
+    .brand{
+      text-align:center;
+      font-size:22px;
+      font-weight:700;
+      background:linear-gradient(90deg,#7c3aed,#ec4899);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    .brand span{
+      display:block;
+      font-size:13px;
+      color:#374151;
+      -webkit-text-fill-color:#374151;
+    }
+
+    .container{max-width:1100px;margin:auto;padding:20px;}
+
+    h1{text-align:center;font-size:28px;margin-bottom:6px;}
+    .subtitle{text-align:center;color:#374151;margin-bottom:30px;}
+
+    .packages{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:20px;margin-bottom:30px;
+    }
+
+    .package{
+      background:#fff;border-radius:22px;padding:22px;
+      box-shadow:0 20px 50px rgba(0,0,0,0.15);
+      cursor:pointer;border:3px solid transparent;
+      transition:.3s;
+    }
+    .package:hover{transform:translateY(-6px);}
+    .package.selected{
+      border-color:#7c3aed;
+      box-shadow:0 25px 60px rgba(124,58,237,.35);
+    }
+
+    .price{font-size:26px;font-weight:700;color:#7c3aed;margin-bottom:12px;}
+    .features{list-style:none;margin-bottom:10px;}
+    .features li{font-size:14px;margin-bottom:6px;}
+    .note{font-size:12px;color:#6b7280;}
+
+    .people-box{
+      background:#fff;border-radius:18px;padding:20px;
+      max-width:420px;margin:0 auto 30px;
+      box-shadow:0 15px 40px rgba(0,0,0,0.12);
+      text-align:center;
+    }
+
+    select{
+      width:100%;padding:10px;border-radius:12px;
+      border:1.5px solid #d1d5db;margin-top:6px;
+    }
+
+    .summary{
+      background:#fff;border-radius:20px;padding:22px;
+      max-width:480px;margin:auto;text-align:center;
+      box-shadow:0 20px 50px rgba(0,0,0,0.15);
+    }
+
+    .summary p{font-size:14px;margin-bottom:6px;}
+    .total{font-size:20px;font-weight:700;color:#16a34a;margin-top:10px;}
+
+    .btn{
+      margin-top:18px;width:100%;padding:14px;
+      border:none;border-radius:14px;
+      background:linear-gradient(90deg,#7c3aed,#ec4899);
+      color:#fff;font-size:16px;font-weight:600;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    Amovi’s Cafe & Fast Food
+    <span>Moments • Memories • Celebrations</span>
+  </div>
+</header>
+
+<div class="container">
+  <h1>Select Your Package</h1>
+  <p class="subtitle">Choose the perfect celebration package</p>
+
+  <div class="packages">
+    <div class="package selected" onclick="selectPackage(this,'Basic',1699)">
+      <h2>Basic</h2>
+      <div class="price">₹1699</div>
+      <ul class="features">
+        <li>🎬 Private Theatre (2 Hours)</li>
+        <li>🎈 Basic Decoration</li>
+        <li>👥 Up to 20 People</li>
+      </ul>
+      <p class="note">Extra person ₹300 (Max 20)</p>
+    </div>
+
+    <div class="package" onclick="selectPackage(this,'Standard',2199)">
+      <h2>Standard</h2>
+      <div class="price">₹2199</div>
+      <ul class="features">
+        <li>🎬 Private Theatre (2 Hours)</li>
+        <li>🎉 Premium Decoration</li>
+        <li>👥 Up to 20 People</li>
+      </ul>
+      <p class="note">Extra person ₹300 (Max 20)</p>
+    </div>
+
+    <div class="package" onclick="selectPackage(this,'Premium',2699)">
+      <h2>Premium</h2>
+      <div class="price">₹2699</div>
+      <ul class="features">
+        <li>🎬 Private Theatre (2 Hours)</li>
+        <li>🌹 Luxury Decoration</li>
+        <li>📸 Photo Setup</li>
+        <li>👥 Up to 20 People</li>
+      </ul>
+      <p class="note">Extra person ₹300 (Max 20)</p>
+    </div>
+  </div>
+
+  <div class="people-box">
+    <label>Number of People (Max 20)</label>
+    <select id="people" onchange="updateTotal()">
+      <!-- 4 to 20 -->
+      <script>
+        for(let i=4;i<=20;i++){
+          document.write(`<option value="${i}">${i}</option>`);
+        }
+      </script>
+    </select>
+  </div>
+
+  <div class="summary">
+    <p>Package: <span id="pkg">Basic</span></p>
+    <p>Base Price: ₹<span id="base">1699</span></p>
+    <p>Extra People Charge: ₹<span id="extra">0</span></p>
+    <div class="total">Total ₹<span id="total">1699</span></div>
+    <button class="btn" onclick="goNext()">Next →</button>
+  </div>
+</div>
+
+<script>
+  let selectedPackage="Basic";
+  let basePrice=1699;
+
+  function selectPackage(el,name,price){
+    document.querySelectorAll('.package').forEach(p=>p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPackage=name;
+    basePrice=price;
+    updateTotal();
+  }
+
+  function updateTotal(){
+    const people=parseInt(document.getElementById("people").value);
+    const extra=people>4?(people-4)*300:0;
+    const total=basePrice+extra;
+
+    document.getElementById("pkg").innerText=selectedPackage;
+    document.getElementById("base").innerText=basePrice;
+    document.getElementById("extra").innerText=extra;
+    document.getElementById("total").innerText=total;
+
+    localStorage.setItem("people",people);
+    localStorage.setItem("package",selectedPackage);
+    localStorage.setItem("total",total);
+  }
+
+  function goNext(){
+    window.location.href="booking.html";
+  }
+
+  updateTotal();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Amovi's Cafe – Admin Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#e9d5ff,#fbcfe8);
+  padding:20px;
+}
+
+/* 🔰 BRAND HEADER */
+.brand-header{
+  text-align:center;
+  margin-bottom:25px;
+}
+
+.brand-header h1{
+  margin:0;
+  font-size:28px;
+  font-weight:700;
+}
+
+.brand-header p{
+  margin-top:6px;
+  font-size:14px;
+  color:#4b5563;
+}
+
+/* DASHBOARD TITLE */
+.dashboard-title{
+  text-align:center;
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:15px;
+}
+
+.table-wrap{
+  background:#fff;
+  border-radius:18px;
+  padding:15px;
+  box-shadow:0 20px 50px rgba(0,0,0,.15);
+  overflow-x:auto;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:900px;
+}
+
+thead{
+  background:linear-gradient(90deg,#7c3aed,#ec4899);
+  color:#fff;
+}
+
+th,td{
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+}
+
+tbody tr{
+  border-bottom:1px solid #e5e7eb;
+}
+
+.status-confirmed{
+  color:#16a34a;
+  font-weight:600;
+}
+
+.status-cancelled{
+  color:#dc2626;
+  font-weight:600;
+}
+
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:8px;
+  font-size:13px;
+  cursor:pointer;
+}
+
+.cancel-btn{
+  background:#dc2626;
+  color:#fff;
+}
+
+.cancel-btn:disabled{
+  background:#9ca3af;
+  cursor:not-allowed;
+}
+
+/* FOOTER */
+.footer{
+  text-align:center;
+  margin-top:25px;
+  font-size:13px;
+  color:#6b7280;
+}
+</style>
+</head>
+
+<body>
+
+<!-- 🔰 BRAND HEADER -->
+<div class="brand-header">
+  <h1>🍽️ Amovi's Cafe & Fast Food</h1>
+  <p>Private Celebrations · Moments · Memories</p>
+</div>
+
+<div class="dashboard-title">
+  Admin Dashboard – Booking Management
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Mobile</th>
+      <th>Package</th>
+      <th>Date</th>
+      <th>Time Slot</th>
+      <th>People</th>
+      <th>Amount</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="bookingTable">
+    <tr><td colspan="9">Loading bookings...</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="footer">
+  © 2026 Amovi's Cafe & Fast Food | Booking Admin Panel
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyBymiTjjqUN-AAspzoA_bOGUWOzEc9o3jA",
+  authDomain: "amovis-cafe-booking.firebaseapp.com",
+  projectId: "amovis-cafe-booking",
+});
+
+const db = firebase.firestore();
+const table = document.getElementById("bookingTable");
+
+db.collection("bookings")
+  .orderBy("createdAt","desc")
+  .onSnapshot(snapshot=>{
+    table.innerHTML = "";
+
+    if(snapshot.empty){
+      table.innerHTML = `<tr><td colspan="9">No bookings found</td></tr>`;
+      return;
+    }
+
+    snapshot.forEach(doc=>{
+      const d = doc.data();
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+        <td>${d.name || "-"}</td>
+        <td>${d.mobile || "-"}</td>
+        <td>${d.package || "-"}</td>
+        <td>${d.date || "-"}</td>
+        <td>${d.timeSlot || "-"}</td>
+        <td>${d.people || "-"}</td>
+        <td>₹${d.amount ?? 0}</td>
+        <td class="${d.status === 'CANCELLED' ? 'status-cancelled':'status-confirmed'}">
+          ${d.status || "CONFIRMED"}
+        </td>
+        <td>
+          <button class="cancel-btn"
+            ${d.status === "CANCELLED" ? "disabled":""}
+            onclick="cancelBooking('${doc.id}')">
+            Cancel
+          </button>
+        </td>
+      `;
+
+      table.appendChild(tr);
+    });
+  });
+
+function cancelBooking(id){
+  if(!confirm("Cancel this booking for Amovi's Cafe?")) return;
+
+  db.collection("bookings").doc(id).update({
+    status:"CANCELLED",
+    cancelledAt: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{
+    alert("Booking cancelled successfully");
+  });
+}
+</script>
+
+</body>
+</html>

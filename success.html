@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Booking Confirmed – Amovi's Cafe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e9d5ff, #fbcfe8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .top-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .top-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .top-header p {
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .card {
+      background: #fff;
+      width: 100%;
+      max-width: 420px;
+      padding: 28px;
+      border-radius: 22px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+      text-align: center;
+    }
+
+    h1 {
+      color: #16a34a;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 18px;
+    }
+
+    .details {
+      background: #f9fafb;
+      border-radius: 16px;
+      padding: 16px;
+      text-align: left;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .details p {
+      margin-bottom: 6px;
+    }
+
+    .details span {
+      font-weight: 600;
+    }
+
+    .total {
+      font-size: 18px;
+      font-weight: 700;
+      color: #16a34a;
+      margin-top: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .whatsapp {
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color: #fff;
+    }
+
+    .home {
+      background: linear-gradient(90deg, #7c3aed, #ec4899);
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-header">
+    <h2>Amovi's Cafe & Fast Food</h2>
+    <p>Private Celebrations • Moments • Memories</p>
+  </div>
+
+  <div class="card">
+    <h1>🎉 Booking Confirmed!</h1>
+    <p class="subtitle">Thank you for choosing Amovi's Cafe</p>
+
+    <div class="details">
+      <p>Name: <span id="name"></span></p>
+      <p>Mobile: <span id="mobile"></span></p>
+      <p>Package: <span id="package"></span></p>
+      <p>Date: <span id="date"></span></p>
+      <p>Time Slot: <span id="slot"></span></p>
+      <p>No. of People: <span id="people"></span></p>
+      <div class="total">Total Amount: ₹<span id="total"></span></div>
+    </div>
+
+    <button class="btn whatsapp" onclick="sendWhatsApp()">📲 WhatsApp Confirmation</button>
+    <button class="btn home" onclick="goHome()">Back to Home</button>
+  </div>
+
+<script>
+  // ✅ SAFE LOAD (No mismatch)
+  const name = localStorage.getItem("name");
+  const mobile = localStorage.getItem("mobile");
+  const pkg = localStorage.getItem("package");
+  const date = localStorage.getItem("date");
+  const slot = localStorage.getItem("timeSlot");
+  const people = localStorage.getItem("people");
+  const total = localStorage.getItem("total");
+
+  if (!name || !mobile) {
+    alert("Session expired. Please book again.");
+    window.location.href = "home.html";
+  }
+
+  document.getElementById("name").innerText = name;
+  document.getElementById("mobile").innerText = mobile;
+  document.getElementById("package").innerText = pkg;
+  document.getElementById("date").innerText = date;
+  document.getElementById("slot").innerText = slot;
+  document.getElementById("people").innerText = people;
+  document.getElementById("total").innerText = total;
+
+  function sendWhatsApp() {
+    const msg =
+`Hello ${name},
+Your booking at *Amovi's Cafe & Fast Food* is confirmed 🎉
+
+📦 Package: ${pkg}
+📅 Date: ${date}
+⏰ Time: ${slot}
+👥 People: ${people}
+💰 Amount: ₹${total}
+
+Thank you for choosing us!`;
+
+    const url = "https://wa.me/91" + mobile + "?text=" + encodeURIComponent(msg);
+    window.open(url, "_blank");
+  }
+
+  function goHome() {
+    // OPTIONAL: Clear after confirmation
+    localStorage.clear();
+    window.location.href = "home.html";
+  }
+</script>
+
+</body>
+</html>

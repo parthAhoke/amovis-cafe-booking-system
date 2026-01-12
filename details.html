@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Confirm Booking – Amovi's Cafe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #e9d5ff, #fbcfe8);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: #fff;
+      padding: 28px;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 18px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1.5px solid #d1d5db;
+      font-size: 14px;
+    }
+
+    .summary {
+      background: #f9fafb;
+      padding: 16px;
+      border-radius: 16px;
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .summary p {
+      margin-bottom: 6px;
+    }
+
+    .pay-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(90deg, #7c3aed, #ec4899);
+      color: white;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pay-btn:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Confirm Your Booking</h2>
+
+  <input id="name" placeholder="Full Name" />
+  <input id="mobile" placeholder="10-digit Mobile Number" maxlength="10" />
+
+  <div class="summary">
+    <p><b>Package:</b> <span id="pkg"></span></p>
+    <p><b>Date:</b> <span id="date"></span></p>
+    <p><b>Time:</b> <span id="time"></span></p>
+    <p><b>People:</b> <span id="people"></span></p>
+    <p><b>Total Amount:</b> ₹<span id="amount"></span></p>
+  </div>
+
+  <button class="pay-btn" onclick="payNow()">Pay & Confirm Booking</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- Razorpay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  /* 🔥 Firebase Config */
+  const firebaseConfig = {
+    apiKey: "AIzaSyBymiTjjqUN-AAspzoA_bOGUWOzEc9o3jA",
+    authDomain: "amovis-cafe-booking.firebaseapp.com",
+    projectId: "amovis-cafe-booking"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  /* 📦 Load booking data */
+  const booking = {
+    package: localStorage.getItem("package"),
+    date: localStorage.getItem("date"),
+    timeSlot: localStorage.getItem("timeSlot"),
+    people: localStorage.getItem("people"),
+    amount: Number(localStorage.getItem("total"))
+  };
+
+  document.getElementById("pkg").innerText = booking.package;
+  document.getElementById("date").innerText = booking.date;
+  document.getElementById("time").innerText = booking.timeSlot;
+  document.getElementById("people").innerText = booking.people;
+  document.getElementById("amount").innerText = booking.amount;
+
+  function payNow() {
+    const name = document.getElementById("name").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+
+    if (!name || mobile.length !== 10) {
+      alert("Please enter valid Name & Mobile");
+      return;
+    }
+
+    const options = {
+      key: "rzp_test_S2sYOR8sHVfpSw",   // 🔴 Tujha Razorpay KEY
+      amount: booking.amount * 100,
+      currency: "INR",
+      name: "Amovi's Cafe & Fast Food",
+      description: "Table Booking Payment",
+      handler: function () {
+
+        db.collection("bookings").add({
+          name: name,
+          mobile: mobile,
+          package: booking.package,
+          date: booking.date,
+          timeSlot: booking.timeSlot,
+          people: booking.people,
+          amount: booking.amount,
+          status: "CONFIRMED",
+          paymentStatus: "PAID",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }).then(() => {
+          localStorage.setItem("name", name);
+          localStorage.setItem("mobile", mobile);
+          window.location.href = "success.html";
+        });
+      },
+      prefill: { name, contact: mobile },
+      theme: { color: "#7c3aed" }
+    };
+
+    new Razorpay(options).open();
+  }
+</script>
+
+</body>
+</html>

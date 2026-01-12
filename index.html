@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amovi's Cafe</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at center, #1a1a1a, #000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .splash {
+      text-align: center;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .logo-wrapper {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 35px rgba(255, 0, 0, 0.55);
+    }
+
+    .logo-wrapper img {
+      width: 75%;
+      height: auto;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 28px;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    .tagline {
+      color: #ff5c5c;
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin-bottom: 22px;
+    }
+
+    .loader {
+      width: 38px;
+      height: 38px;
+      border: 3px solid rgba(255,255,255,0.2);
+      border-top: 3px solid #ff3b3b;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .logo-wrapper {
+        width: 130px;
+        height: 130px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      .tagline {
+        font-size: 13px;
+      }
+    }
+  </style>
+
+  <script>
+    // Auto redirect after splash
+    setTimeout(() => {
+      window.location.href = "home.html";
+    }, 2800);
+  </script>
+</head>
+
+<body>
+  <div class="splash">
+    <div class="logo-wrapper">
+      <img src="assets/logo.png" alt="Amovi's Cafe Logo" />
+    </div>
+
+    <h1>Amovi's Cafe</h1>
+    <div class="tagline">Moments • Memories • Magic</div>
+
+    <div class="loader"></div>
+  </div>
+</body>
+</html>
